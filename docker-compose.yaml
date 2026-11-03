@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: everydayos-postgres
+    environment:
+      POSTGRES_USER: everydayos
+      POSTGRES_PASSWORD: localdev
+      POSTGRES_DB: everydayos
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: everydayos-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
