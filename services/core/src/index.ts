@@ -1,14 +1,18 @@
-import express from "express";
 
-const app = express();
+import { prisma } from "./lib/prisma.js";
 
-app.get("/health", (req, res) => {
-    res.json({
-        status: "success",
-        message: "EverydayOS Core is running"
-    });
-});
+console.log("EverydayOS Core starting...");
 
-app.listen(3000, () => {
-    console.log("Core service running on port 3000");
-});
+// Temporary database connection test
+async function main() {
+  try {
+    await prisma.$connect();
+    console.log("PostgreSQL connected successfully!");
+  } catch (error) {
+    console.error("Database connection failed:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+main();
