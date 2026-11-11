@@ -1,7 +1,15 @@
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import dotenv from "dotenv";
 import { Pool } from "pg";
 
-dotenv.config({ path: "./.env" });
+// Resolve services/core/.env regardless of the directory the process was
+// started from (repo root vs. services/core). Works from both src/ (tsx)
+// and dist/ (compiled), since both sit two levels below the package root.
+const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+
+dotenv.config({ path: resolve(packageRoot, ".env") });
 
 const connectionString = process.env.DATABASE_URL;
 
