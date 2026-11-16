@@ -1,6 +1,7 @@
-
+﻿
+import "dotenv/config";
 import express from "express";
-import { pool } from "./config/database.js";
+import prisma from "./lib/prisma.js";
 
 const app = express();
 
@@ -12,40 +13,18 @@ app.get("/", (_req, res) => {
 
 app.get("/health", async (_req, res) => {
   try {
-    const { rows } = await pool.query(
-      "select now() as time, current_database() as db"
-    );
+    await prisma.$queryRaw`SELECT 1`;
 
     res.json({
       status: "ok",
-      db: rows[0]
+      database: "connected",
     });
   } catch (error) {
     console.error("Health check failed:", error);
+
     res.status(500).json({
       status: "error",
-      message: "Database connection failed"
-    });
-  }
-});
-
-// Database test
-app.get("/db-test", async (_req, res) => {
-  try {
-    const { rows } = await pool.query(
-      "select $1::int + $2::int as sum",
-      [2, 40]
-    );
-
-    res.json({
-      ok: true,
-      sum: rows[0].sum
-    });
-  } catch (error) {
-    console.error("Database test failed:", error);
-    res.status(500).json({
-      ok: false,
-      message: "Database query failed"
+      database: "disconnected",
     });
   }
 });
